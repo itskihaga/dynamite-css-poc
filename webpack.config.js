@@ -8,10 +8,12 @@ const config = {
   mode: "development",
   entry: {
     main: path.resolve(__dirname, "src", "index.ts"),
+    page1: path.resolve(__dirname, "src", "index.ts"),
+    page2: path.resolve(__dirname, "src", "index.ts"),
   },
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "index.js",
+    filename: "[name].bundle.js",
   },
   devServer: {
     port: 3000,
@@ -23,6 +25,16 @@ const config = {
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, "src", "index.html"),
       filename: "index.html",
+    }),
+    new HtmlWebpackPlugin({
+      filename: "page1.html",
+      inject: false,
+      chunks: ["page1"],
+      templateContent: ({ htmlWebpackPlugin }) => {
+        return htmlWebpackPlugin.files.js
+          .map((js) => `<script src="${js}"></script>`)
+          .join("\n");
+      },
     }),
   ],
 };
